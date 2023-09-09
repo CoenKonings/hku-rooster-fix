@@ -1,5 +1,6 @@
 import requests
 import os
+from hku_rooster_fix.settings import BASE_DIR
 
 
 def get_calendar_feed(calendar_name, url):
@@ -8,7 +9,7 @@ def get_calendar_feed(calendar_name, url):
     """
     r = requests.get(url)
 
-    if not os.path.isdir("../../calendars/"):
-        os.mkdir("../../calendars")
+    if not os.path.isdir(os.path.join(BASE_DIR, "rooster_import", "calendars")):
+        os.mkdir(os.path.join(BASE_DIR, "rooster_import", "calendars"))
 
-    open("../../calendars/" + calendar_name, "wb").write(r.content)
+    open(os.path.join(BASE_DIR, "rooster_import", "calendars", calendar_name + ".ics"), "wb").write(r.content)
