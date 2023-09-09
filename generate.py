@@ -1,6 +1,100 @@
 import requests
 import os
-from icalendar import Calendar, Event
+from icalendar import Calendar
+
+
+def cal_for_all_group_combinations(groups):
+    """
+    Create a Calendar object for all possible combinations of the given groups.
+    Groups should be a dictionary, where each key is a course name and each
+    value is another dictionary. This dictionary should contain each group
+    number as a key, where the corresponding value is a list of all events for
+    that group.
+    """
+    courses_group_names = {}
+
+    for course_name in groups:
+        group_names = []
+
+        for group_name in groups[course_name]:
+            group_names.append(group_name)
+
+        courses_group_names[course_name] = group_names
+
+    print(courses_group_names)
+
+
+def generate_ical_files(track_calendars):
+    """
+    Generate ical files for all possible track and group combinations.
+    """
+    for track_name in track_calendars:
+        track_calendar = track_calendars[track_name]
+        everyone, groups = split_course_groups(track_calendar)
+        group_cals = cal_for_all_group_combinations(groups)
+
+
+def calendar_from_groups(groups):
+    """
+    Generate a calendar for the given groups. The groups parameter should
+    contain a dictionary where the group names are the keys, and the events are
+    their values.
+    """
+    calendar = Calendar()
+    calendar.add('prodid', 'hku-rooster-fix-coen-konings')
+    calendar.add('version', '2.0')
+
+    for group in groups:
+        events = groups[group]
+
+        for event in events:
+            calendar.add_component(event)
+
+    return calendar
+
+
+def groups_from_event_name(name):
+    """
+    Find the group numbers and course name from an event name.
+    """
+    groups = []
+    course_name = ''
+
+    for word in name.split(' '):
+        if word.lower() == 'groep' or word.lower() == 'en':
+            continue
+        elif word.isnumeric():
+            groups.append(word)
+        else:
+            course_name += word + ' '
+
+    return course_name.strip(), groups
+
+
+def split_course_groups(calendar):
+    """
+    Find out which groups exist for each course in this calendar. Create a
+    dictionary containing all events for each group.
+    """
+    course_groups = {}
+    everyone = []
+
+    for c in calendar.walk():
+        if c.name == 'VEVENT':
+            if 'groep' in c.get('summary').lower() and 'hele groep' not in c.get('summary').lower():
+                course, groups = groups_from_event_name(c.get('summary'))
+
+                for group in groups:
+                    if course in course_groups and group in course_groups[course]:
+                        course_groups[course][group].append(c)
+                    elif course in course_groups and group not in course_groups[course]:
+                        course_groups[course][group] = [c]
+                    else:
+                        course_groups[course] = {group: [c]}
+            else:
+                everyone.append(c)
+
+    return everyone, course_groups
 
 
 def group_events_by_track(calendar_path):
@@ -51,12 +145,7 @@ def main():
     mt2_totaal_path = 'calendars/jaar2-totaal.ics'
     get_calendar_feed(mt2_totaal_path)
     track_calendars = group_events_by_track(mt2_totaal_path)
-
-    for cal in track_calendars.values():
-        for c in cal.walk():
-            if c.name == 'VEVENT':
-                print(c.get('description'))
-                break
+    generate_ical_files(track_calendars)
 
 
 if __name__ == "__main__":
