@@ -12,11 +12,11 @@ class Course(models.Model):
 
 class Group(models.Model):
     name = models.CharField(max_length=255)
-    course = models.ForeignKey(Course)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 class Event(models.Model):
     description = models.CharField(max_length=255, null=False)
-    location = models.charField(max_length=255, null=True)
+    location = models.CharField(max_length=255, null=True)
     start = models.DateTimeField(null=False)
     end = models.DateTimeField(null=True)
