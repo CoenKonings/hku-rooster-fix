@@ -1,9 +1,9 @@
 from django.contrib import admin
-from .models import Track, Calendar
+from .models import Track, CalendarSource
 
 
-@admin.register(Calendar)
-class CalendarAdmin(admin.ModelAdmin):
+@admin.register(CalendarSource)
+class CalendarSourceAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
 
 

@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Calendar(models.Model):
+class CalendarSource(models.Model):
     name = models.CharField(max_length=255)
     url = models.URLField(max_length=255)
 
@@ -25,3 +25,8 @@ class Event(models.Model):
     location = models.CharField(max_length=255, null=True)
     start = models.DateTimeField(null=False)
     end = models.DateTimeField(null=True)
+
+
+class Calendar(models.Model):
+    tracks = models.ManyToManyField(Track)
+    groups = models.ManyToManyField(Group)
