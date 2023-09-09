@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'hku_rooster_fix.settings')
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "hku_rooster_fix.settings")
 
 application = get_asgi_application()
