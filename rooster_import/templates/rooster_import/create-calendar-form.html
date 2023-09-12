@@ -25,7 +25,7 @@
                     {% for group in course.groups %}
                         <div class="course-selector">
                             <input type="checkbox" name="group-{{group.id}}" id="group-{{group.id}}">
-                            <label for="group-{{group.id}}">{{ course.name }} {{ group.name }}</label>
+                            <label for="group-{{group.id}}">Groep {{ group.name }} {{ course.name }}</label>
                         </div>
                     {% endfor %}
                 {% else %}
