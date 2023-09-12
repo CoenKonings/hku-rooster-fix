@@ -1,16 +1,21 @@
 from django.core.management.base import BaseCommand, CommandError
-from rooster_import.models import Calendar
-from ._calendar_helpers import get_calendar_feed
+from rooster_import.models import CalendarSource, Event
+from ._calendar_helpers import get_calendar_feed, calendar_to_database
 
 
 class Command(BaseCommand):
-    help = "Downloads the calendar for year 2 and uses it to update the database."
+    help = "Download ics files and update database to incorporate changes."
 
     def handle(self, *args, **options):
-        self.stdout.write("Downloading calendar files...")
-        calendars = Calendar.objects.all()
+        calendars = CalendarSource.objects.all()
+        # Remove all events to replace them later.
+        self.stdout.write("Deleting events...")
+        Event.objects.all().delete()
 
         for calendar in calendars:
-            get_calendar_feed(calendar.name, calendar.url)
+            self.stdout.write("Adding {} to database...".format(calendar.name))
+            calendar_to_database(calendar.name)
+
+        # Update ical files for group combinations
 
         self.stdout.write("Done!")

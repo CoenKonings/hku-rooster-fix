@@ -2,22 +2,28 @@ from django.db import models
 
 
 class CalendarSource(models.Model):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     url = models.URLField(max_length=255)
 
 
 class Track(models.Model):
-    name = models.CharField(max_length=255, null=False)
+    name = models.CharField(max_length=255, null=False, unique=True)
+
+    def __str__(self):
+        return self.name
 
 
 class Course(models.Model):
-    name = models.CharField(max_length=255, null=False)
+    name = models.CharField(max_length=255, null=False, unique=True)
     tracks = models.ManyToManyField(Track)
+
+    def __str__(self):
+        return "Course {}.".format(self.name)
 
 
 class Group(models.Model):
     name = models.CharField(max_length=255, null=False)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE, null=False)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
 
 class Event(models.Model):
@@ -25,8 +31,10 @@ class Event(models.Model):
     location = models.CharField(max_length=255, null=True)
     start = models.DateTimeField(null=False)
     end = models.DateTimeField(null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    groups = models.ManyToManyField(Group)
 
 
 class Calendar(models.Model):
     tracks = models.ManyToManyField(Track)
-    groups = models.ManyToManyField(Group)
+    courses = models.ManyToManyField(Course)
