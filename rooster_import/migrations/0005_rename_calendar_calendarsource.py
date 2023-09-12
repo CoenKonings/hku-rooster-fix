@@ -4,14 +4,13 @@ from django.db import migrations
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('rooster_import', '0004_alter_calendar_url'),
+        ("rooster_import", "0004_alter_calendar_url"),
     ]
 
     operations = [
         migrations.RenameModel(
-            old_name='Calendar',
-            new_name='CalendarSource',
+            old_name="Calendar",
+            new_name="CalendarSource",
         ),
     ]

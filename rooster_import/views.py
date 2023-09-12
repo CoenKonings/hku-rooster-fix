@@ -1,3 +1,6 @@
 from django.shortcuts import render
+from django.views.generic import TemplateView
 
-# Create your views here.
+
+class CreateFeedView(TemplateView):
+    template_name = "rooster_import/test.html"

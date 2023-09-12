@@ -21,6 +21,7 @@ class CourseAdmin(admin.ModelAdmin):
 class GroupAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
 
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ["id", "description", "start", "end"]

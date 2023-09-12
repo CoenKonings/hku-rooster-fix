@@ -14,7 +14,10 @@ def get_calendar_feed(calendar_name, url):
     if not os.path.isdir(os.path.join(BASE_DIR, "rooster_import", "calendars")):
         os.mkdir(os.path.join(BASE_DIR, "rooster_import", "calendars"))
 
-    open(os.path.join(BASE_DIR, "rooster_import", "calendars", calendar_name + ".ics"), "wb").write(r.content)
+    open(
+        os.path.join(BASE_DIR, "rooster_import", "calendars", calendar_name + ".ics"),
+        "wb",
+    ).write(r.content)
 
 
 def groups_from_event_name(name):
@@ -25,7 +28,6 @@ def groups_from_event_name(name):
     course_name = ""
 
     if "groep" in name.lower() and "hele groep" not in name.lower():
-
         for word in name.split(" "):
             if word.lower() == "groep" or word.lower() == "en":
                 continue
@@ -109,7 +111,9 @@ def store_event(event):
     course = store_course(course_name, tracks)
     groups = store_groups(course, group_names)
 
-    event = Event(description=summary, location=location, course=course, start=start, end=end)
+    event = Event(
+        description=summary, location=location, course=course, start=start, end=end
+    )
     event.save()
     [event.groups.add(group) for group in groups]
 
@@ -118,7 +122,10 @@ def calendar_to_database(calendar_name):
     """
     Read the calendar from an ical file and save it to the database.
     """
-    with open(os.path.join(BASE_DIR, "rooster_import", "calendars", calendar_name + ".ics"), "rb") as calendar_file:
+    with open(
+        os.path.join(BASE_DIR, "rooster_import", "calendars", calendar_name + ".ics"),
+        "rb",
+    ) as calendar_file:
         mt2_totaal = Calendar.from_ical(calendar_file.read())
 
     for component in mt2_totaal.walk():
