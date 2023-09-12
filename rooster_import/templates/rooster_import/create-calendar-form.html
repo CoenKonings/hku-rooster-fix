@@ -1,0 +1,41 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dit is een test</title>
+
+    <script src="{% static 'calendar-form.js' %}"></script>
+</head>
+<body>
+    <h1>Calendar feed generator</h1>
+    <form action="#" method="post">
+        <h2>Selecteer je tracks</h2>
+        {% for track in tracks %}
+            <div class="track-selector">
+                <input type="checkbox" name="track-{{track.id}}" id="track-{{track.id}}">
+                <label for="track-{{track.id}}">{{track.name}}</label>
+            </div>
+        {% endfor %}
+        <h2>Selecteer de vakken en groepen die je wil zien</h2>
+        <div id="group-course-selector">
+            {% for course in courses %}
+                {% if course.groups %}
+                    {% for group in course.groups %}
+                        <div class="course-selector">
+                            <input type="checkbox" name="group-{{group.id}}" id="group-{{group.id}}">
+                            <label for="group-{{group.id}}">{{ course.name }} {{ group.name }}</label>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="course-selector">
+                        <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
+                        <label for="course-{{course.id}}">{{course.name}}</label>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </form>
+</body>
+</html>
