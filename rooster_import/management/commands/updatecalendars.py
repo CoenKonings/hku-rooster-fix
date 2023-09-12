@@ -16,6 +16,6 @@ class Command(BaseCommand):
             self.stdout.write("Adding {} to database...".format(calendar.name))
             calendar_to_database(calendar.name)
 
-        # Update ical files for group combinations
+        # TODO: Update ical files for group combinations
 
         self.stdout.write("Done!")
