@@ -20,6 +20,9 @@ class Course(models.Model):
     def __str__(self):
         return "Course {}.".format(self.name)
 
+    def track_ids(self):
+        return [track.id for track in self.tracks.all()]
+
 
 class Group(models.Model):
     name = models.CharField(max_length=255, null=False)

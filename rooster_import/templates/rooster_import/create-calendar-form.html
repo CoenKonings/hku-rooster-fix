@@ -8,35 +8,33 @@
 
     <link rel="stylesheet" href="{% static 'style.css' %}">
 
-    <script src="{% static 'calendar-form.js' %}" defer></script>
+    <script src="{% static 'rooster_import/calendar-form.js' %}" defer></script>
 </head>
 <body>
     <h1>Calendar feed generator</h1>
-    <form action="#" method="post">
-        <h2>Selecteer je tracks</h2>
-        {% for track in tracks %}
-            <div class="track-selector">
-                <input type="checkbox" name="track-{{track.id}}" id="track-{{track.id}}">
-                <label for="track-{{track.id}}">{{track.name}}</label>
+    <h2>Selecteer je tracks</h2>
+    {% for track in tracks %}
+        <div>
+            <input type="checkbox" name="track-{{track.id}}" id="track-{{track.id}}" class="track-selector">
+            <label for="track-{{track.id}}">{{track.name}}</label>
+        </div>
+    {% endfor %}
+    <h2>Selecteer de vakken en groepen die je wil zien</h2>
+    <div id="group-course-selector">
+        {% for course in courses %}
+            <div class="course-selector" tracks="{{ course.track_ids|join:","}}">
+                <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
+                <label for="course-{{course.id}}">{{course.name}}</label>
+            {% if course.group_set.all %}
+                <select name="group-course-{{course.id}}" id="group-course-{{course.id}}">
+                    <option value="" selected disabled>Select a group</option>
+                    {% for group in course.group_set.all %}
+                        <option value="{{ group.id }}">Groep {{ group.name }}</option>
+                    {% endfor %}
+                </select>
+            {% endif %}
             </div>
         {% endfor %}
-        <h2>Selecteer de vakken en groepen die je wil zien</h2>
-        <div id="group-course-selector">
-            {% for course in courses %}
-                <div class="course-selector" tracks="{{ course.tracks.all|join:","}}">
-                    <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
-                    <label for="course-{{course.id}}">{{course.name}}</label>
-                {% if course.group_set.all %}
-                    <select name="group-course-{{course.id}}" id="group-course-{{course.id}}">
-                        <option value="" selected disabled>Select a group</option>
-                        {% for group in course.group_set.all %}
-                            <option value="{{ group.id }}">Groep {{ group.name }}</option>
-                        {% endfor %}
-                    </select>
-                {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    </form>
+    </div>
 </body>
 </html>
