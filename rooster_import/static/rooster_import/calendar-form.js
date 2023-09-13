@@ -1,9 +1,8 @@
 {
     let tracks = [];
     let courses = [];
-    let groups = [];
 
-    Array.prototype.forEach.call(document.getElementsByClassName("track-selector"), trackSelector => {
+    Array.prototype.forEach.call(document.getElementsByClassName("track-checkbox"), trackCheckbox => {
         const updateCourses = () => {
             Array.prototype.forEach.call(document.getElementsByClassName("course-selector"), courseSelector => {
                 courseTracks = courseSelector.getAttribute("tracks")
@@ -18,7 +17,7 @@
             });
         }
 
-        trackSelector.addEventListener("change", (event) => {
+        trackCheckbox.addEventListener("change", (event) => {
             if (event.target.checked) {
                 tracks.push(event.target.name.split("-")[1]);
             } else {
@@ -32,40 +31,69 @@
     Array.prototype.forEach.call(document.getElementsByClassName("course-checkbox"), courseCheckbox => {
         courseCheckbox.addEventListener("change", event => {
             const courseId = event.target.id.split("-")[1];
-            const groupSelect = document.getElementById(`group-course-${courseId}`);
 
             if (event.target.checked) {
                 courses.push(courseId);
-
-                if (groupSelect) {
-                    groupSelect.style.display = "inline";
-                }
             } else {
                 courses = courses.filter(course => course !== courseId);
-
-                if (groupSelect) {
-                    groupSelect.style.display = "none";
-                }
             }
         });
     });
 
-    Array.prototype.forEach.call(document.getElementsByClassName("group-select"), groupSelect => {
-        if (!courses.includes(groupSelect.id.split("-")[2])) {
-            groupSelect.style.display = "none";
+    const getIcalLink = async requestBody => {
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
         }
 
-        groupSelect.addEventListener("change", event => {
-            const prevValue = event.target.getAttribute("prevValue");
-            if (prevValue) {
-                groups = groups.filter(group => group !== prevValue);
+        const csrftoken = getCookie('csrftoken');
+
+        fetch("/", {
+            method: "POST",
+            body: JSON.stringify(requestBody),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+                "X-CSRFToken": csrftoken
+            }
+        })
+            .then(response => response.json())
+            .then(json => {
+                document.getElementById("calendar-link").innerHTML = json.icalUrl;
+                document.getElementById("calendar-form").style.display = "none";
+                document.getElementById("calendar-link-display").style.display = "block";
+            });
+    };
+
+    document.getElementById("submit-button").addEventListener("click", event => {
+        if (courses.length === 0) {
+            alert("Selecteer minstens 1 vak");
+        }
+
+        const requestBody = []
+
+        courses.forEach(course => {
+            const courseObj = {id: course, group: ""};
+            const groupSelect = document.getElementById(`group-course-${course}`);
+
+            if (groupSelect) {
+                courseObj.group = groupSelect.value;
             }
 
-            groups.push(event.target.value);
-            event.target.setAttribute("prevValue", event.target.value);
-
-            console.log(groups);
+            requestBody.push(courseObj);
         });
+
+        getIcalLink(requestBody);
     });
 }
 

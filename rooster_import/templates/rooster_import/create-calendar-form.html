@@ -4,37 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dit is een test</title>
+    <title>HKU Rooster fix</title>
 
-    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <link rel="stylesheet" href="{% static 'rooster_import/style.css' %}">
 
     <script src="{% static 'rooster_import/calendar-form.js' %}" defer></script>
 </head>
 <body>
     <h1>Calendar feed generator</h1>
-    <h2>Selecteer je tracks</h2>
-    {% for track in tracks %}
-        <div>
-            <input type="checkbox" name="track-{{track.id}}" id="track-{{track.id}}" class="track-selector">
-            <label for="track-{{track.id}}">{{track.name}}</label>
-        </div>
-    {% endfor %}
-    <h2>Selecteer de vakken en groepen die je wil zien</h2>
-    <div id="group-course-selector">
-        {% for course in courses %}
-            <div class="course-selector" tracks="{{ course.track_ids|join:","}}">
-                <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}" class="course-checkbox">
-                <label for="course-{{course.id}}">{{course.name}}</label>
-                {% if course.group_set.all %}
-                    <select name="group-course-{{course.id}}" id="group-course-{{course.id}}" class="group-select">
-                        <option value="" selected disabled>Select a group</option>
-                        {% for group in course.group_set.all %}
-                            <option value="{{ group.id }}">Groep {{ group.name }}</option>
-                        {% endfor %}
-                    </select>
-                {% endif %}
+    <div id="calendar-form">
+        <h2>Selecteer je tracks om de vakkenlijst te filteren</h2>
+        {% for track in tracks %}
+            <div class="track-selector">
+                <input type="checkbox" name="track-{{track.id}}" id="track-{{track.id}}" class="track-checkbox">
+                <label for="track-{{track.id}}">{{track.name}}</label>
             </div>
         {% endfor %}
+        <h2>Selecteer de vakken en groepen die je in je calendar feed wil zien</h2>
+        <div id="group-course-selector">
+            {% for course in courses %}
+                <div class="course-selector" tracks="{{ course.track_ids|join:","}}">
+                    <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}" class="course-checkbox">
+                    <label for="course-{{course.id}}">{{course.name}}</label>
+                    {% if course.group_set.all %}
+                        <select name="group-course-{{course.id}}" id="group-course-{{course.id}}" class="group-select">
+                            <option value="" selected>Alle groepen</option>
+                            {% for group in course.group_set.all %}
+                                <option value="{{ group.id }}">Groep {{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+
+        <button id="submit-button">Generate icalendar link</button>
+    </div>
+    <div id="calendar-link-display">
+        <h2>Gebruik deze link om de feed te importeren</h2>
+        <p id="calendar-link"></p>
     </div>
 </body>
 </html>
