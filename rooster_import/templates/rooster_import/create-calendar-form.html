@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dit is een test</title>
 
-    <script src="{% static 'calendar-form.js' %}"></script>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    <script src="{% static 'calendar-form.js' %}" defer></script>
 </head>
 <body>
     <h1>Calendar feed generator</h1>
@@ -21,19 +23,18 @@
         <h2>Selecteer de vakken en groepen die je wil zien</h2>
         <div id="group-course-selector">
             {% for course in courses %}
-                {% if course.groups %}
-                    {% for group in course.groups %}
-                        <div class="course-selector">
-                            <input type="checkbox" name="group-{{group.id}}" id="group-{{group.id}}">
-                            <label for="group-{{group.id}}">Groep {{ group.name }} {{ course.name }}</label>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <div class="course-selector">
-                        <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
-                        <label for="course-{{course.id}}">{{course.name}}</label>
-                    </div>
+                <div class="course-selector" tracks="{{ course.tracks.all|join:","}}">
+                    <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
+                    <label for="course-{{course.id}}">{{course.name}}</label>
+                {% if course.group_set.all %}
+                    <select name="group-course-{{course.id}}" id="group-course-{{course.id}}">
+                        <option value="" selected disabled>Select a group</option>
+                        {% for group in course.group_set.all %}
+                            <option value="{{ group.id }}">Groep {{ group.name }}</option>
+                        {% endfor %}
+                    </select>
                 {% endif %}
+                </div>
             {% endfor %}
         </div>
     </form>
