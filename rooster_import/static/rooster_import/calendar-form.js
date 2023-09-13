@@ -21,7 +21,6 @@
                 tracks = tracks.filter(track => track !== event.target.name.split("-")[1]);
             }
 
-            console.log(tracks)
             updateCourses();
         });
     });
