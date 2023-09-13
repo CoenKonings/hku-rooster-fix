@@ -29,9 +29,10 @@ def groups_from_event_name(name):
 
     if "groep" in name.lower() and "hele groep" not in name.lower():
         for word in name.split(" "):
+
             if word.lower() == "groep" or word.lower() == "en":
                 continue
-            elif word.isnumeric():
+            elif word.isnumeric() or len(word) == 2 and word[0].isnumeric():
                 groups.append(word)
             else:
                 course_name += word + " "
@@ -92,6 +93,7 @@ def store_groups(course, group_names):
             group = Group(name=group_name, course=course)
             group.save()
 
+        course.group_set.add(group)
         groups.append(group)
 
     return groups
