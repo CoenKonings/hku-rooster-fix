@@ -23,16 +23,16 @@
     <div id="group-course-selector">
         {% for course in courses %}
             <div class="course-selector" tracks="{{ course.track_ids|join:","}}">
-                <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}">
+                <input type="checkbox" name="course-{{course.id}}" id="course-{{course.id}}" class="course-checkbox">
                 <label for="course-{{course.id}}">{{course.name}}</label>
-            {% if course.group_set.all %}
-                <select name="group-course-{{course.id}}" id="group-course-{{course.id}}">
-                    <option value="" selected disabled>Select a group</option>
-                    {% for group in course.group_set.all %}
-                        <option value="{{ group.id }}">Groep {{ group.name }}</option>
-                    {% endfor %}
-                </select>
-            {% endif %}
+                {% if course.group_set.all %}
+                    <select name="group-course-{{course.id}}" id="group-course-{{course.id}}" class="group-select">
+                        <option value="" selected disabled>Select a group</option>
+                        {% for group in course.group_set.all %}
+                            <option value="{{ group.id }}">Groep {{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
