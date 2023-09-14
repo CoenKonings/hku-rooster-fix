@@ -1,5 +1,6 @@
 calendars/
 .rooster_env/
+*.ical
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/django
