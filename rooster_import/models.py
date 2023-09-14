@@ -85,29 +85,38 @@ class Calendar(models.Model):
             events += [event for event in course.event_set.all()]
 
         ical = icalendar.Calendar()
-        ical.add('prodid', 'hkurooster.coenkonings.art')
-        ical.add('version', '2.0')
-        ical.add('method', 'PUBLISH')
-        ical.add('name', 'HKU Rooster Fix')
-        ical.add('x-wr-calname', 'HKU Rooster Fix')
+        ical.add("prodid", "hkurooster.coenkonings.art")
+        ical.add("version", "2.0")
+        ical.add("method", "PUBLISH")
+        ical.add("name", "HKU Rooster Fix")
+        ical.add("x-wr-calname", "HKU Rooster Fix")
 
         for event in events:
             e = icalendar.Event()
-            e.add('name', event.description)
-            e.add('summary', event.description)
-            e.add('comment', '')
-            e.add('description', event.description)
-            e.add('dtstart', event.start)
-            e.add('dtend', event.end)
-            e.add('location', event.location)
+            e.add("name", event.description)
+            e.add("summary", event.description)
+            e.add("comment", "")
+            e.add("description", event.description)
+            e.add("dtstart", event.start)
+            e.add("dtend", event.end)
+            e.add("location", event.location)
             ical.add_component(e)
 
-        with open(settings.BASE_DIR / 'rooster_import/static/rooster_import/calendars/' / self.get_ical_filename(), 'wb') as file:
+        with open(
+            settings.BASE_DIR
+            / "rooster_import/static/rooster_import/calendars/"
+            / self.get_ical_filename(),
+            "wb",
+        ) as file:
             file.write(ical.to_ical())
-
 
     def get_url(self):
         """
         Return the url that leads to this calendar's ical file.
         """
-        return "https://localhost:8000" + settings.STATIC_URL + "rooster_import/calendars/" + self.get_ical_filename()
+        return (
+            "https://localhost:8000"
+            + settings.STATIC_URL
+            + "rooster_import/calendars/"
+            + self.get_ical_filename()
+        )

@@ -26,7 +26,9 @@ def parse_request(request_body):
             course = Course.objects.get(id=course_dict["id"])
             courses.append(course)
         except Course.DoesNotExist:
-            return {"icalUrl": "Error: course {} does not exist".format(course_dict["id"])}
+            return {
+                "icalUrl": "Error: course {} does not exist".format(course_dict["id"])
+            }
 
         if course_dict["group"] == "":
             groups += [group for group in course.group_set.all()]
@@ -34,7 +36,11 @@ def parse_request(request_body):
             group_set = course.group_set.filter(id=course_dict["group"])
 
             if not group_set.exists():
-                return {"icalUrl": "Error: Group {} does not exist for course {}".format(course_dict["group"], course.id)}
+                return {
+                    "icalUrl": "Error: Group {} does not exist for course {}".format(
+                        course_dict["group"], course.id
+                    )
+                }
 
             groups.append(group_set.first())
 
