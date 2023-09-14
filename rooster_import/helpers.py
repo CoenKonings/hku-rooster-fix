@@ -1,15 +1,17 @@
-from .models import Course, Group
+from .models import Course, Calendar
 
 
-def validate_request(request_body):
+def parse_request(request_body):
     """
     Validate whether the given request body contains dictionaries that
     represent a course and (some of) its associated groups.
     """
+    courses = []
+    groups = []
 
     # Check if data type is list and its length is greater than 0.
     if not isinstance(request_body, list) or len(request_body) < 1:
-        return False
+        return {"icalUrl": "Error: Invalid request"}
 
     for course_dict in request_body:
         # Check if data type is dict and the expected keys are present.
@@ -18,15 +20,39 @@ def validate_request(request_body):
             or "id" not in course_dict
             or "group" not in course_dict
         ):
-            return False
+            return {"icalUrl": "Error: Invalid request"}
 
-        # Check if a course with the given ID exists.
-        if not Course.objects.get(id=course_dict["id"]):
-            return False
+        try:
+            course = Course.objects.get(id=course_dict["id"])
+            courses.append(course)
+        except Course.DoesNotExist:
+            return {"icalUrl": "Error: course {} does not exist".format(course_dict["id"])}
 
-        # Check if each group ID corresponds to an entry in the database.
-        for group_id in course_dict["group"]:
-            if not Group.objects.get(id=group_id):
-                return False
+        if course_dict["group"] == "":
+            groups += [group for group in course.group_set.all()]
+        else:
+            group_set = course.group_set.filter(id=course_dict["group"])
 
-    return True
+            if not group_set.exists():
+                return {"icalUrl": "Error: Group {} does not exist for course {}".format(course_dict["group"], course.id)}
+
+            groups.append(group_set.first())
+
+    calendar = Calendar.objects
+
+    for course in courses:
+        calendar = calendar.filter(courses=course)
+
+    for group in groups:
+        calendar = calendar.filter(groups=group)
+
+    if calendar.exists():
+        calendar = calendar.first()
+    else:
+        calendar = Calendar()
+        calendar.save()
+        [calendar.courses.add(course) for course in courses]
+        [calendar.groups.add(group) for group in groups]
+
+    return {"icalUrl": "Succes"}
+    # return {"icalUrl": generate_ical_url(request_body)}

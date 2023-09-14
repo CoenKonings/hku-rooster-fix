@@ -1,10 +1,15 @@
 from django.contrib import admin
-from .models import Track, CalendarSource, Course, Group, Event
+from .models import Track, CalendarSource, Course, Group, Event, Calendar
 
 
 @admin.register(CalendarSource)
 class CalendarSourceAdmin(admin.ModelAdmin):
     list_display = ["id", "name"]
+
+
+@admin.register(Calendar)
+class CalendarAdmin(admin.ModelAdmin):
+    list_display = ["id"]
 
 
 @admin.register(Track)

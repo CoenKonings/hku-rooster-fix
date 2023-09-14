@@ -39,5 +39,34 @@ class Event(models.Model):
 
 
 class Calendar(models.Model):
-    tracks = models.ManyToManyField(Track)
     courses = models.ManyToManyField(Course)
+    groups = models.ManyToManyField(Group)
+
+    def get_ical_filename(self):
+        """
+        Generate the name of the ical file associated with this calendar.
+        """
+        courses = self.courses.order_by("id")
+        groups = self.groups.order_by("id")
+        ical_name = "c_"
+
+        for course in courses:
+            ical_name += str(course.id) + "_"
+
+        ical_name += "g_"
+
+        for group in groups:
+            ical_name += str(group.id) + "_"
+
+        return ical_name + ".ical"
+
+    def generate(self):
+        """
+        Generate an ical file for this calendar. If one was already made,
+        replace it.
+        """
+
+    def get_url(self):
+        """
+        Return the url that leads to this calendar's ical file.
+        """

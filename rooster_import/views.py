@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from django.views.decorators.csrf import csrf_exempt
 from .models import Track, Course
-from django.utils.decorators import method_decorator
 from django.http import JsonResponse
-from .helpers import validate_request
+from .helpers import parse_request
 import json
 
 
@@ -21,9 +19,5 @@ class CreateFeedView(TemplateView):
 
     def post(self, request):
         request_body = json.loads(request.body)
-
-        if not validate_request(request_body):
-            return JsonResponse({"icalUrl": "Invalid course or group detected."})
-
-        response = {"icalUrl": "succes!"}
+        response = parse_request(request_body)
         return JsonResponse(response)
