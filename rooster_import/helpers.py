@@ -53,8 +53,6 @@ def parse_request(request_body):
         calendar.save()
         [calendar.courses.add(course) for course in courses]
         [calendar.groups.add(group) for group in groups]
-
-    # TODO: update/generate ical
-    calendar.generate()
+        calendar.generate()
 
     return {"icalUrl": calendar.get_url()}
