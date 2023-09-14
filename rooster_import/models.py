@@ -96,7 +96,7 @@ class Calendar(models.Model):
             e.add('location', event.location)
             ical.add_component(e)
 
-        with open(settings.BASE_DIR / 'rooster_import/static/rooster_import/' / self.get_ical_filename(), 'wb') as file:
+        with open(settings.BASE_DIR / 'rooster_import/static/rooster_import/calendars/' / self.get_ical_filename(), 'wb') as file:
             file.write(ical.to_ical())
 
 
@@ -104,4 +104,4 @@ class Calendar(models.Model):
         """
         Return the url that leads to this calendar's ical file.
         """
-        return "webcal://localhost:8000" + settings.STATIC_URL + "rooster_import/" + self.get_ical_filename()
+        return "webcal://localhost:8000" + settings.STATIC_URL + "rooster_import/calendars/" + self.get_ical_filename()
