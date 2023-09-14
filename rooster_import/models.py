@@ -53,12 +53,12 @@ class Calendar(models.Model):
         """
         courses = self.courses.order_by("id")
         groups = self.groups.order_by("id")
-        ical_name = "c_"
+        ical_name = "C_"
 
         for course in courses:
             ical_name += str(course.id) + "_"
 
-        ical_name += "g_"
+        ical_name += "G_"
 
         for group in groups:
             ical_name += str(group.id) + "_"
@@ -87,9 +87,15 @@ class Calendar(models.Model):
         ical = icalendar.Calendar()
         ical.add('prodid', 'hkurooster.coenkonings.art')
         ical.add('version', '2.0')
+        ical.add('method', 'PUBLISH')
+        ical.add('name', 'HKU Rooster Fix')
+        ical.add('x-wr-calname', 'HKU Rooster Fix')
 
         for event in events:
             e = icalendar.Event()
+            e.add('name', event.description)
+            e.add('summary', event.description)
+            e.add('comment', '')
             e.add('description', event.description)
             e.add('dtstart', event.start)
             e.add('dtend', event.end)
@@ -104,4 +110,4 @@ class Calendar(models.Model):
         """
         Return the url that leads to this calendar's ical file.
         """
-        return "webcal://localhost:8000" + settings.STATIC_URL + "rooster_import/calendars/" + self.get_ical_filename()
+        return "https://localhost:8000" + settings.STATIC_URL + "rooster_import/calendars/" + self.get_ical_filename()

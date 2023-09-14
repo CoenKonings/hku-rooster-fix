@@ -14,6 +14,7 @@ class Command(BaseCommand):
 
         for calendar_source in calendar_sources:
             self.stdout.write("Adding {} to database...".format(calendar_source.name))
+            get_calendar_feed(calendar_source.name, calendar_source.url)
             calendar_to_database(calendar_source.name)
 
         self.stdout.write("Updating ical files...")
