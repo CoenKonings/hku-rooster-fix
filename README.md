@@ -1,5 +1,5 @@
 # HKU Rooster Fix
-This project generates a webcal feed for each possible combination of groups
-in each track in year 2 of HKU. It is meant to help students clean up their
-calendar while still ensuring that their calendars are up to date on schedule
-changes.
+This project contains a Django application that allows users to select courses and groups for year 2 of music technology at Utrecht University of the Arts, and creates an icalendar feed for those groups to remove clutter from their schedules. Refer to requirements.txt for the libraries that were used during development.
+
+## Planned features
+- Support year 1, 3 and 4.
