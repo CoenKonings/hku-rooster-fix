@@ -29,7 +29,6 @@ def groups_from_event_name(name):
 
     if "groep" in name.lower() and "hele groep" not in name.lower():
         for word in name.split(" "):
-
             if word.lower() == "groep" or word.lower() == "en":
                 continue
             elif word.isnumeric() or len(word) == 2 and word[0].isnumeric():

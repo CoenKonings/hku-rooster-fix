@@ -3,6 +3,8 @@
     let courses = [];
 
     Array.prototype.forEach.call(document.getElementsByClassName("track-checkbox"), trackCheckbox => {
+        trackCheckbox.checked = false;
+
         const updateCourses = () => {
             Array.prototype.forEach.call(document.getElementsByClassName("course-selector"), courseSelector => {
                 courseTracks = courseSelector.getAttribute("tracks")
@@ -29,6 +31,8 @@
     });
 
     Array.prototype.forEach.call(document.getElementsByClassName("course-checkbox"), courseCheckbox => {
+        courseCheckbox.checked = false;
+
         courseCheckbox.addEventListener("change", event => {
             const courseId = event.target.id.split("-")[1];
 
@@ -78,6 +82,7 @@
     document.getElementById("submit-button").addEventListener("click", event => {
         if (courses.length === 0) {
             alert("Selecteer minstens 1 vak");
+            return;
         }
 
         const requestBody = []
