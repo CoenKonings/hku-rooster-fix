@@ -54,5 +54,7 @@ def parse_request(request_body):
         [calendar.courses.add(course) for course in courses]
         [calendar.groups.add(group) for group in groups]
 
-    return {"icalUrl": "Succes"}
-    # return {"icalUrl": generate_ical_url(request_body)}
+    # TODO: update/generate ical
+    calendar.generate()
+
+    return {"icalUrl": calendar.get_url()}
