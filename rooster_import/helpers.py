@@ -44,21 +44,10 @@ def parse_request(request_body):
 
             groups.append(group_set.first())
 
-    calendar = Calendar.objects
-
-    for course in courses:
-        calendar = calendar.filter(courses=course)
-
-    for group in groups:
-        calendar = calendar.filter(groups=group)
-
-    if calendar.exists():
-        calendar = calendar.first()
-    else:
-        calendar = Calendar()
-        calendar.save()
-        [calendar.courses.add(course) for course in courses]
-        [calendar.groups.add(group) for group in groups]
-        calendar.generate()
+    calendar = Calendar()
+    calendar.save()
+    [calendar.courses.add(course) for course in courses]
+    [calendar.groups.add(group) for group in groups]
+    calendar.generate()
 
     return {"icalUrl": calendar.get_url()}
