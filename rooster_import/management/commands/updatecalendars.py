@@ -1,4 +1,4 @@
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from rooster_import.models import CalendarSource, Event, Calendar
 from ._calendar_helpers import get_calendar_feed, calendar_to_database
 

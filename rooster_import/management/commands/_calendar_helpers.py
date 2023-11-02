@@ -49,11 +49,17 @@ def tracks_from_event(event):
     relevant_tracks = []
     attendees = event.get("attendee")
 
-    for attendee in attendees:
-        attendee_name = attendee.params["CN"]
+    if attendees:
+        for attendee in attendees:
+            attendee_name = attendee.params["CN"]
 
+            for track in tracks:
+                if track.name == attendee_name:
+                    relevant_tracks.append(track)
+
+    else:
         for track in tracks:
-            if track.name == attendee_name:
+            if track.name == "relevant for everyone":
                 relevant_tracks.append(track)
 
     return relevant_tracks
