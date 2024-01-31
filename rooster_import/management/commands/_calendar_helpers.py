@@ -1,7 +1,7 @@
 import requests
 import os
 from hku_rooster_fix.settings import BASE_DIR
-from rooster_import.models import Track, Course, Group, Event
+from rooster_import.models import Track, Course, Group, Event, Lecturer
 from icalendar import Calendar
 
 
@@ -104,6 +104,26 @@ def store_groups(course, group_names):
     return groups
 
 
+def store_lecturers(event):
+    attendees = event.get("attendee")
+    lecturers = []
+
+    if attendees:
+        for attendee in attendees:
+            attendee_name = attendee.params["CN"]
+
+            if not Track.objects.filter(name=attendee_name).exists():
+                try:
+                    lecturer = Lecturer.objects.filter(name=attendee_name).get()
+                except Lecturer.DoesNotExist:
+                    lecturer = Lecturer(name=attendee_name)
+                    lecturer.save()
+
+                lecturers.append(lecturer)
+
+    return lecturers
+
+
 def store_event(event):
     """
     Store the event. If necessary, add the associated courses and groups.
@@ -117,12 +137,14 @@ def store_event(event):
     course_name, group_names = groups_from_event_name(summary)
     course = store_course(course_name, tracks)
     groups = store_groups(course, group_names)
+    lecturers = store_lecturers(event)
 
     event = Event(
         description=summary, location=location, course=course, start=start, end=end
     )
     event.save()
     [event.groups.add(group) for group in groups]
+    [event.lecturers.add(lecturer) for lecturer in lecturers]
 
 
 def calendar_to_database(calendar_name):

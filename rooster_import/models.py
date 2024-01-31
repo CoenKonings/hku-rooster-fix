@@ -18,6 +18,13 @@ class Track(models.Model):
         return self.name
 
 
+class Lecturer(models.Model):
+    name = models.CharField(max_length=255, null=False, unique=True)
+
+    def __str__(self):
+        return "Lecturer: {}".format(self.name)
+
+
 class Course(models.Model):
     name = models.CharField(max_length=255, null=False, unique=True)
     tracks = models.ManyToManyField(Track)
@@ -41,6 +48,7 @@ class Event(models.Model):
     end = models.DateTimeField(null=True)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     groups = models.ManyToManyField(Group)
+    lecturers = models.ManyToManyField(Lecturer)
 
 
 class Calendar(models.Model):
