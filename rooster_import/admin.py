@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Track, CalendarSource, Course, Group, Event, Calendar
+from .models import Track, CalendarSource, Course, Group, Event, Calendar, CourseLecturerSelection, Lecturer
 
 
 @admin.register(CalendarSource)
@@ -30,3 +30,11 @@ class GroupAdmin(admin.ModelAdmin):
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ["id", "description", "start", "end"]
+
+@admin.register(CourseLecturerSelection)
+class CourseLecturerSelectionAdmin(admin.ModelAdmin):
+    list_display = ["id"]
+
+@admin.register(Lecturer)
+class LecturerAdmin(admin.ModelAdmin):
+    list_display = ["id", "name"]

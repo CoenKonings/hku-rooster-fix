@@ -90,9 +90,26 @@
         courses.forEach(course => {
             const courseObj = {id: course, group: ""};
             const groupSelect = document.getElementById(`group-course-${course}`);
+            const lecturerSelect = document.getElementById(`lecturer-course-${course}`)
 
             if (groupSelect) {
                 courseObj.group = groupSelect.value;
+            }
+
+            if (lecturerSelect) {
+                const lecturers = [];
+
+                for (let i = 0; i < lecturerSelect.options.length; i++) {
+                    const opt = lecturerSelect.options[i];
+
+                    console.log(opt);
+
+                    if (opt.selected) {
+                        lecturers.push(opt.value);
+                    }
+                }
+
+                courseObj.lecturers = lecturers;
             }
 
             requestBody.push(courseObj);

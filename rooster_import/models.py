@@ -62,19 +62,26 @@ class Event(models.Model):
 
 
 class Calendar(models.Model):
-    courses = models.ManyToManyField(Course)
     groups = models.ManyToManyField(Group)
 
     def get_ical_filename(self):
         """
         Generate the name of the ical file associated with this calendar.
         """
-        courses = self.courses.order_by("id")
+        course_lecturer_selections = self.courselecturerselection_set.order_by("id")
         groups = self.groups.order_by("id")
         ical_name = "C_"
 
-        for course in courses:
-            ical_name += str(course.id) + "_"
+        for course_lecturers in course_lecturer_selections:
+            ical_name += str(course_lecturers.course.id)
+
+            if course_lecturers.lecturers.exists():
+                ical_name += "-"
+
+                for lecturer in course_lecturers.lecturers.all():
+                    ical_name += str(lecturer.id) + ";"
+
+            ical_name += "_"
 
         ical_name += "G_"
 
@@ -89,18 +96,30 @@ class Calendar(models.Model):
         replace it.
         """
         events = []
-        courses = self.courses
-        groups = self.groups.all()
 
-        for group in groups:
-            courses = courses.filter(~Q(group=group))
-            events += [event for event in group.event_set.all()]
+        courses_lecturers = self.courselecturerselection_set.all()
 
-        if not groups:
-            courses = courses.all()
+        for course_lecturers in courses_lecturers:
+            course = course_lecturers.course
+            groups = self.groups.filter(course=course_lecturers.course)
+            lecturers = course_lecturers.lecturers.all()
 
-        for course in courses:
-            events += [event for event in course.event_set.all()]
+            print("=============================================")
+            print(course_lecturers)
+            print(groups)
+            print("---------------------------------------------")
+
+            course_events = Event.objects.filter(course=course)
+
+            print(course_events)
+
+            if lecturers:
+                course_events = course_events.filter(lecturers__in=lecturers)
+
+            if groups:
+                course_events = course_events.filter(group__in=groups)
+
+            events += [event for event in course_events]
 
         ical = icalendar.Calendar()
         ical.add("prodid", "hkurooster.coenkonings.art")
@@ -137,4 +156,23 @@ class Calendar(models.Model):
             + settings.STATIC_URL
             + "rooster_import/calendars/"
             + self.get_ical_filename()
+        )
+
+
+class CourseLecturerSelection(models.Model):
+    """
+    This model is necessary to allow users to select specific lecturers whose
+    classes they want to import for a certain course. Note that this is
+    different from group selection.
+    """
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    lecturers = models.ManyToManyField(Lecturer)
+    calendar = models.ForeignKey(Calendar, on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        return "selection {}: course {}, lecturers {}, calendar {}".format(
+            self.id,
+            self.course,
+            self.lecturers.all(),
+            self.calendar
         )

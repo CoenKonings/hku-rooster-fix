@@ -43,7 +43,7 @@
 
                     {% if course.get_lecturers %}
                         <select name="lecturer-course-{{course.id}}" id="lecturer-course-{{course.id}}" class="group-select" multiple>
-                            <option value="" disabled>Selecteer docenten (gebruik ctrl op windows of cmd op mac om meerdere te selecteren)</option>
+                            <option value="" selected disabled>Selecteer docenten (gebruik ctrl op windows of cmd op mac om meerdere te selecteren)</option>
                             {% for lecturer in course.get_lecturers %}
                                 <option value="{{ lecturer.id }}">{{ lecturer }}</option>
                             {% endfor %}
