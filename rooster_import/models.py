@@ -22,7 +22,7 @@ class Lecturer(models.Model):
     name = models.CharField(max_length=255, null=False, unique=True)
 
     def __str__(self):
-        return "Lecturer: {}".format(self.name)
+        return self.name
 
 
 class Course(models.Model):
@@ -34,6 +34,16 @@ class Course(models.Model):
 
     def track_ids(self):
         return [track.id for track in self.tracks.all()]
+
+    def get_lecturers(self):
+        lecturers = []
+
+        for event in self.event_set.all():
+            for lecturer in event.lecturers.all():
+                if lecturer not in lecturers:
+                    lecturers.append(lecturer)
+
+        return lecturers
 
 
 class Group(models.Model):

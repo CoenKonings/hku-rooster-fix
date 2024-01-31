@@ -24,6 +24,9 @@
             </div>
         {% endfor %}
         <h2>Selecteer de vakken en groepen die je in je calendar feed wil zien</h2>
+        <p>
+            Je kan per vak kiezen voor alle groepen of 1 specifieke groep (als er bij het vak een groepsindeling gedetecteerd is). Je kan voor elk vak ook bepalen of je alle lessen wil zien (door geen specifieke docent te selecteren), of alleen de lessen van specifieke docenten. Gebruik cmd+click op mac of ctrl+click op windows/linux om meerdere docenten te selecteren.
+        </p>
         <div id="group-course-selector">
             {% for course in courses %}
                 <div class="course-selector" tracks="{{ course.track_ids|join:","}}">
@@ -34,6 +37,15 @@
                             <option value="" selected>Alle groepen</option>
                             {% for group in course.group_set.all %}
                                 <option value="{{ group.id }}">Groep {{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
+
+                    {% if course.get_lecturers %}
+                        <select name="lecturer-course-{{course.id}}" id="lecturer-course-{{course.id}}" class="group-select" multiple>
+                            <option value="" disabled>Selecteer docenten (gebruik ctrl op windows of cmd op mac om meerdere te selecteren)</option>
+                            {% for lecturer in course.get_lecturers %}
+                                <option value="{{ lecturer.id }}">{{ lecturer }}</option>
                             {% endfor %}
                         </select>
                     {% endif %}
