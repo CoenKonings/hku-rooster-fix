@@ -88,7 +88,7 @@
         const requestBody = []
 
         courses.forEach(course => {
-            const courseObj = {id: course, group: ""};
+            const courseObj = {id: course, group: "", lecturers: ""};
             const groupSelect = document.getElementById(`group-course-${course}`);
             const lecturerSelect = document.getElementById(`lecturer-course-${course}`)
 
