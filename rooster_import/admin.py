@@ -9,7 +9,10 @@ class CalendarSourceAdmin(admin.ModelAdmin):
 
 @admin.register(Calendar)
 class CalendarAdmin(admin.ModelAdmin):
-    list_display = ["id"]
+    list_display = ["id", "filename"]
+
+    def filename(self, instance):
+        return instance.get_ical_filename()
 
 
 @admin.register(Track)
